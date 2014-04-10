@@ -13,6 +13,9 @@ Vanilla JavaScript plugin to detect when webfonts have been loaded
         }
     });
     
+    // 'fonts.all' event is triggered when all of the fonts
+    // have finished loading
+    
     document.body.addEventListener('fonts.all', function () {
         // Do some things
         console.log('All fonts have loaded');
