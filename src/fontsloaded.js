@@ -41,19 +41,25 @@ FontsLoaded.prototype.createElements = function (cb){
         font = this.settings.fonts[index];
 
         // Convert font name to camelcase
-        fontId = font
-            .toLowerCase()
-            .replace(/\s/g, '-')
-            .replace(/-(.)/g, function(match, group1) {
-                return group1.toUpperCase();
-            });
+        fontId = font.toCamelCase();
 
-        // Create and style element
+        // Create and style webfont element
         elem                  = document.createElement('span');
-        elem.className        = 'fonts-loaded ';
-        elem.id               = fontId;
+        elem.className        = 'fonts-loaded';
+        elem.id               = fontId + '-webfont';
         elem.style.fontFamily = font;
-        elem.style.fontFamily = font;
+        elem.style.position   = 'absolute';
+        elem.style.left       = '-9999px';
+        elem.innerHTML        = font + ' is loading';
+
+        // Add the element to the body
+        document.body.appendChild(elem);
+
+        // Create and style default font element
+        elem                  = document.createElement('span');
+        elem.className        = 'fonts-loaded';
+        elem.id               = fontId + '-basefont';
+        elem.style.fontFamily = 'Arial';
         elem.style.position   = 'absolute';
         elem.style.left       = '-9999px';
         elem.innerHTML        = font + ' is loading';
@@ -171,5 +177,18 @@ FontsLoaded.prototype.extend = function (object1, object2) {
     for (key in object2) { object3[key] = object2[key]; }
 
     return object3;
+
+};
+
+String.prototype.toCamelCase = function() {
+
+    this
+        .toLowerCase()
+        .replace(/\s/g, '-')
+        .replace(/-(.)/g, function(match, group1) {
+            return group1.toUpperCase();
+        });
+
+    return this;
 
 };
