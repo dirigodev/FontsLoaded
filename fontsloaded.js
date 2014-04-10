@@ -1,3 +1,11 @@
+/*!
+* FontsLoaded 1.0
+*
+* Copyright 2014, Dirigo Design & Development http://github.com/dirigodev
+* Released under the MIT license
+*
+*/
+
 var FontsLoaded = function(options){
 
     var self     = this,
@@ -12,13 +20,14 @@ var FontsLoaded = function(options){
 
     this.createElements(function () {
         
-        self.loadingTimeout = window.setInterval(self.checkElementWidth, 50, self);
+        self.loadingTimeout = window.setInterval(self.checkElementWidth, 10, self);
 
     });
 
 }
 
 FontsLoaded.prototype.createElements = function (cb){
+
     // Create elements which we will use
     // to detect if the fonts have loaded
 
@@ -26,9 +35,10 @@ FontsLoaded.prototype.createElements = function (cb){
 
     for (index = 0; index < this.settings.fonts.length; ++index) {
         
+        // Get the name of the font
         font = this.settings.fonts[index];
 
-        // Font name to camelcase
+        // Convert font name to camelcase
         fontId = font
             .toLowerCase()
             .replace(/\s/g, '-')
@@ -36,14 +46,21 @@ FontsLoaded.prototype.createElements = function (cb){
                 return group1.toUpperCase();
             });
 
+        // Create and style element
         elem                  = document.createElement('span');
         elem.className        = 'fonts-loaded ';
         elem.id               = fontId;
         elem.style.fontFamily = font;
+        elem.style.fontFamily = font;
+        elem.style.position   = 'absolute';
+        elem.style.left       = '-9999px';
         elem.innerHTML        = font + ' is loading';
 
+        // Add the element to the body
         document.body.appendChild(elem);
 
+        // Create an object in the fontList array so
+        // we can keep track of fonts more easily
         this.fontList.push({
             font   : fontId,
             width  : elem.offsetWidth,
@@ -51,6 +68,8 @@ FontsLoaded.prototype.createElements = function (cb){
         });
     }
 
+    // Execute callback function once elements
+    // have been created
     if (typeof cb === 'function') {
         cb();
     }
@@ -59,6 +78,11 @@ FontsLoaded.prototype.createElements = function (cb){
 
 FontsLoaded.prototype.checkElementWidth = function (self){
 
+    // Here we're going to compare the current width
+    // of the elements we created to their original
+    // width. If the width has changed, the font is
+    // finished loading.
+
     var index;
 
     for (index = 0; index < self.fontList.length; ++index) {
@@ -66,22 +90,39 @@ FontsLoaded.prototype.checkElementWidth = function (self){
         var _this = self.fontList[index],
             el    = document.getElementById(_this.font);
 
-        _this.loaded = el.offsetWidth !== _this.width;
+        if (el.offsetWidth !== _this.width) {
+            // Mark font as loaded in fontList
+            _this.loaded = true;
 
-        self.trigger('fonts.' + _this.font, document.body);
+            // Trigger an event so we can do something when
+            // this particular font has loaded
+            self.trigger('fonts.' + _this.font, document.body);
 
-        ++self.loadedFonts;
+            // Remove the original element from the DOM. We
+            // don't need it anymore.
+            document.body.removeChild(el);
+
+            // Let everyone know we have loaded one more font
+            ++self.loadedFonts;
+        }
 
     }
 
+    // If we have loaded all the fonts, do some stuff
     if (self.loadedFonts === self.fontList.length) {
+
+        // Clear the setInterval
         window.clearInterval(self.loadingTimeout);
 
+        // Trigger an event so we can do something when
+        // ALL the fonts have loaded
         self.trigger('fonts.all', document.body);
 
+        // Execute the complete function, if it exists
         if (typeof self.settings.complete === 'function') {
             self.settings.complete(self);
         }
+
     }
 
 }
