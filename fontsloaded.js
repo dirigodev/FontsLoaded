@@ -3,7 +3,6 @@
 *
 * Copyright 2014, Dirigo Design & Development http://github.com/dirigodev
 * Released under the MIT license
-*
 */
 
 var FontsLoaded = function(options){
