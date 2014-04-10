@@ -16,7 +16,7 @@ gulp.task('lint', function() {
 
 });
 
-gulp.task('uglify', function() {
+gulp.task('uglify', ['clean'], function() {
 
     console.log('[uglify]'.bold.magenta + ' Minifying JS files');
 
@@ -27,24 +27,12 @@ gulp.task('uglify', function() {
 });
 
 // Clean dist/css folder
-gulp.task('clean-dist-css', function() {
+gulp.task('clean', function() {
 
-    console.log('[clean-dist-css]'.bold.magenta + ' Deleting all the files in /dist/css');
+    console.log('[clean]'.bold.magenta + ' Deleting all the files in /dist');
 
-    return gulp.src(['dist/css', 'docs/dist/css', '_gh_pages/dist/css'], {read: false})
+    return gulp.src(['dist'], {read: false})
         .pipe(clean());
-
-});
-
-
-// Copy dist folder to docs folder
-gulp.task('copy-dist', function () {
-
-    console.log('[copy-dist]'.bold.magenta + ' Copying dist folder to docs');
-
-    return gulp.src('dist/**/*', {base: './'})
-        .pipe(gulp.dest('docs'))
-        .pipe(gulp.dest('_gh_pages'));
 
 });
 
@@ -52,17 +40,11 @@ gulp.task('copy-dist', function () {
 // Watch files for changes
 gulp.task('watch', function() {
 
-    console.log('[watch]'.bold.magenta + ' Watching Sass files for changes');
+    console.log('[watch]'.bold.magenta + ' Watching JS files for changes');
 
-    // gulp.watch('js/*.js', ['lint', 'scripts']);
-    gulp.watch('scss/**/*.scss', ['copy-dist']);
+    gulp.watch('./src/**/*.js', ['lint']);
 
 });
 
-
-// Start dev environment
-gulp.task('dev', ['watch', 'jekyll-watch', 'livereload']);
-
-
 // Default Task
-gulp.task('default', ['sass', 'watch']);
+gulp.task('default', ['lint', 'watch']);
