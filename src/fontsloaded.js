@@ -21,12 +21,12 @@ var FontsLoaded = function(options){
     this.timer       = 0;
 
     this.createElements(function () {
-        
+
         self.loadingTimeout = window.setInterval(self.checkElementWidth, 10, self);
 
     });
 
-}
+};
 
 FontsLoaded.prototype.createElements = function (cb){
 
@@ -36,7 +36,7 @@ FontsLoaded.prototype.createElements = function (cb){
     var index, elem, font;
 
     for (index = 0; index < this.settings.fonts.length; ++index) {
-        
+
         // Get the name of the font
         font = this.settings.fonts[index];
 
@@ -76,7 +76,7 @@ FontsLoaded.prototype.createElements = function (cb){
         cb();
     }
 
-}
+};
 
 FontsLoaded.prototype.checkElementWidth = function (self){
 
@@ -138,7 +138,7 @@ FontsLoaded.prototype.checkElementWidth = function (self){
         }
     }
 
-}
+};
 
 FontsLoaded.prototype.trigger = function (eventName, el) {
 
@@ -160,15 +160,16 @@ FontsLoaded.prototype.trigger = function (eventName, el) {
         el.fireEvent("on" + event.eventType, event);
     }
 
-}
+};
 
 FontsLoaded.prototype.extend = function (object1, object2) {
-    
-    var object3 = {};
-    
-    for (var key in object1) { object3[key] = object1[key]; }
-    for (var key in object2) { object3[key] = object2[key]; }
-    
+
+    var key,
+        object3 = {};
+
+    for (key in object1) { object3[key] = object1[key]; }
+    for (key in object2) { object3[key] = object2[key]; }
+
     return object3;
 
-}
+};

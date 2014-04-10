@@ -1,0 +1,25 @@
+{
+  "name": "FontsLoaded",
+  "version": "1.0.0",
+  "description": "JavaScript plugin to load and handle loading events for webfonts",
+  "main": "fontsloaded.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dirigodev/FontsLoaded.git"
+  },
+  "author": "Dirigo Design & Development",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dirigodev/FontsLoaded/issues"
+  },
+  "homepage": "https://github.com/dirigodev/FontsLoaded",
+  "devDependencies": {
+    "colors": "^0.6.2",
+    "gulp": "~3.6.0",
+    "gulp-clean": "^0.2.4",
+    "gulp-jshint": "~1.5.0",
+    "gulp-uglify": "^0.2.1",
+    "gulp-util": "^2.2.14",
+    "jshint-stylish": "^0.1.5"
+  }
+}
