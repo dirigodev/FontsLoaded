@@ -10,12 +10,15 @@ var FontsLoaded = function(options){
     var self     = this,
         defaults = {
             fonts    : [],
-            complete : null
+            complete : null,
+            error    : null,
+            timeout  : 10000
         };
 
     this.settings    = this.extend(defaults, options);
     this.fontList    = [];
     this.loadedFonts = 0;
+    this.timer       = 0;
 
     this.createElements(function () {
         
@@ -122,6 +125,17 @@ FontsLoaded.prototype.checkElementWidth = function (self){
             self.settings.complete(self);
         }
 
+    }
+
+    // Increment the timer
+    self.timer = self.timer + 10;
+
+    if (self.timer >= self.settings.timeout) {
+        window.clearInterval(self.loadingTimeout);
+
+        if (typeof self.settings.error === 'function') {
+            self.settings.error(self, 'timeout');
+        }
     }
 
 }
