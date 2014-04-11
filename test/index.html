@@ -9,12 +9,72 @@
         <title>FontsLoaded Test Page</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- TEST FONTS -->
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,700,300|Francois+One' rel='stylesheet' type='text/css'>
+
     </head>
     <body>
 
-        <p>Hello world! This is HTML5 Boilerplate.</p>
-
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="/dist/fontsloaded.js"></script>
+
+        <script>
+
+            var fontsLoaded = new FontsLoaded({
+                fonts    : ['Open Sans', 'Francois One'],
+                baseFont : 'Times New Roman',
+                interval : 10,
+                timeout  : 10000,
+                success  : function () {
+                    // Do some things
+                    console.log('Fonts are ready');
+                },
+                error    : function () {
+                    // Do some things
+                    console.log('Fonts failed to load');
+                }
+            });
+
+            document.body.addEventListener('fonts.openSans', function () {
+                document.body.className += ' open-sans-loaded';
+            });
+
+            document.body.addEventListener('fonts.francoisOne', function () {
+                document.body.className += ' francois-one-loaded';
+            });
+
+            document.body.addEventListener('fonts.all', function () {
+                document.body.className += ' fonts-loaded';
+            });
+
+            $(function () {
+
+                if ($('body').hasClass('fonts-loaded')) {
+
+                    $('<p/>', {
+                        css : {
+                            fontFamily : 'Open Sans'
+                        },
+                        text: 'Fonts loaded less fast.'
+                    }).appendTo('body');
+
+                } else {
+
+                    document.body.addEventListener('fonts.all', function () {
+                        $('<p/>', {
+                            css : {
+                                fontFamily : 'Francois One'
+                            },
+                            text: 'Fonts loaded less fast.'
+                        }).appendTo('body');
+                    });
+
+                }
+
+            });
+
+        </script>
 
     </body>
 </html>

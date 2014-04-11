@@ -4,6 +4,7 @@ var gulp    = require('gulp'),
     jshint  = require('gulp-jshint'),
     uglify  = require('gulp-uglify'),
     stylish = require('jshint-stylish'),
+    rename  = require('gulp-rename'),
     colors  = require('colors');
 
 function startExpress() {
@@ -29,12 +30,18 @@ gulp.task('lint', function() {
 });
 
 
-gulp.task('uglify', ['clean'], function() {
+gulp.task('uglify', ['copy-src'], function() {
 
     console.log('[uglify]'.bold.magenta + ' Minifying JS files');
 
     return gulp.src('./src/**/*.js')
-        .pipe(uglify({outSourceMap: true}))
+        .pipe(uglify({
+            preserveComments : 'some',
+            outSourceMap     : true
+        }))
+        .pipe(rename(function (path) {
+            path.basename += '.min';
+        }))
         .pipe(gulp.dest('dist'));
 
 });
@@ -49,6 +56,18 @@ gulp.task('clean', function() {
         .pipe(clean());
 
 });
+
+
+// Copy dist folder to test folder
+gulp.task('copy-src', ['clean'], function () {
+
+    console.log('[copy-src]'.bold.magenta + ' Copying src folder to dist');
+
+    return gulp.src('src/**/*', {base: './src'})
+        .pipe(gulp.dest('dist'));
+
+});
+
 
 // Copy dist folder to test folder
 gulp.task('copy-dist', ['uglify'], function () {
@@ -66,7 +85,7 @@ gulp.task('watch', function() {
 
     console.log('[watch]'.bold.magenta + ' Watching JS files for changes');
 
-    gulp.watch('./src/**/*.js', ['lint']);
+    gulp.watch('./src/**/*.js', ['lint', 'copy-dist']);
 
 });
 
@@ -82,7 +101,9 @@ gulp.task('server', ['copy-dist'], function () {
 
 
 // Build dist files
-gulp.task('build', ['uglify']);
+gulp.task('build', ['copy-dist']);
+
+gulp.task('dev', ['server', 'lint', 'watch']);
 
 gulp.task('test', ['server']);
 

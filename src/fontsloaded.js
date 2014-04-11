@@ -10,7 +10,9 @@ var FontsLoaded = function(options){
     var self     = this,
         defaults = {
             fonts    : [],
-            complete : null,
+            baseFont : 'arial',
+            interval : 10,
+            success  : null,
             error    : null,
             timeout  : 10000
         };
@@ -22,7 +24,7 @@ var FontsLoaded = function(options){
 
     this.createElements(function () {
 
-        self.loadingTimeout = window.setInterval(self.checkElementWidth, 10, self);
+        self.loadingTimeout = window.setInterval(self.checkElementWidth, self.settings.interval, self);
 
     });
 
@@ -47,7 +49,7 @@ FontsLoaded.prototype.createElements = function (cb){
         elem                  = document.createElement('span');
         elem.className        = 'fonts-loaded';
         elem.id               = fontId + '-webfont';
-        elem.style.fontFamily = font;
+        elem.style.fontFamily = font + ', ' + this.settings.baseFont;
         elem.style.position   = 'absolute';
         elem.style.left       = '-9999px';
         elem.innerHTML        = font + ' is loading';
@@ -59,7 +61,7 @@ FontsLoaded.prototype.createElements = function (cb){
         elem                  = document.createElement('span');
         elem.className        = 'fonts-loaded';
         elem.id               = fontId + '-basefont';
-        elem.style.fontFamily = 'Arial';
+        elem.style.fontFamily = this.settings.baseFont;
         elem.style.position   = 'absolute';
         elem.style.left       = '-9999px';
         elem.innerHTML        = font + ' is loading';
@@ -91,27 +93,32 @@ FontsLoaded.prototype.checkElementWidth = function (self){
     // width. If the width has changed, the font is
     // finished loading.
 
-    var index;
+    var index, _this, elWebFont, elBaseFont;
 
     for (index = 0; index < self.fontList.length; ++index) {
 
-        var _this = self.fontList[index],
-            el    = document.getElementById(_this.font);
+        _this      = self.fontList[index];
 
-        if (el.offsetWidth !== _this.width) {
-            // Mark font as loaded in fontList
-            _this.loaded = true;
+        if (!_this.loaded) {
+            elWebFont  = document.getElementById(_this.font + '-webfont'),
+            elBaseFont = document.getElementById(_this.font + '-basefont');
 
-            // Trigger an event so we can do something when
-            // this particular font has loaded
-            self.trigger('fonts.' + _this.font, document.body);
+            if (elWebFont.offsetWidth !== elBaseFont.offsetWidth) {
+                // Mark font as loaded in fontList
+                _this.loaded = true;
 
-            // Remove the original element from the DOM. We
-            // don't need it anymore.
-            document.body.removeChild(el);
+                // Trigger an event so we can do something when
+                // this particular font has loaded
+                self.trigger('fonts.' + _this.font, document.body);
 
-            // Let everyone know we have loaded one more font
-            ++self.loadedFonts;
+                // Remove the original element from the DOM. We
+                // don't need it anymore.
+                document.body.removeChild(elWebFont);
+                document.body.removeChild(elBaseFont);
+
+                // Let everyone know we have loaded one more font
+                ++self.loadedFonts;
+            }
         }
 
     }
@@ -126,9 +133,9 @@ FontsLoaded.prototype.checkElementWidth = function (self){
         // ALL the fonts have loaded
         self.trigger('fonts.all', document.body);
 
-        // Execute the complete function, if it exists
-        if (typeof self.settings.complete === 'function') {
-            self.settings.complete(self);
+        // Execute the success function, if it exists
+        if (typeof self.settings.success === 'function') {
+            self.settings.success(self);
         }
 
     }
@@ -182,13 +189,13 @@ FontsLoaded.prototype.extend = function (object1, object2) {
 
 String.prototype.toCamelCase = function() {
 
-    this
+    var str = this
         .toLowerCase()
         .replace(/\s/g, '-')
         .replace(/-(.)/g, function(match, group1) {
             return group1.toUpperCase();
         });
 
-    return this;
+    return str;
 
 };
