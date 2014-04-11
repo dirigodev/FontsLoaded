@@ -79,4 +79,4 @@ If you are using jQuery, it is likely these events will fire before jQuery has l
 document.body.addEventListener('fonts.all', function () {
     document.body.className += ' fonts-loaded';
 });
-``
+```
