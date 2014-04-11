@@ -1,26 +1,26 @@
 /*!
-* FontsLoaded 1.0
+* FontsLoaded 1.1.1
 *
 * Copyright 2014, Dirigo Design & Development http://github.com/dirigodev
 * Released under the MIT license
 */
 
-var FontsLoaded = function(options){
+var FontsLoaded = function (options) {
 
-    var self     = this,
+    var self = this,
         defaults = {
-            fonts    : [],
-            baseFont : 'arial',
-            interval : 10,
-            success  : null,
-            error    : null,
-            timeout  : 10000
+            fonts: [],
+            baseFont: 'arial',
+            interval: 10,
+            success: null,
+            error: null,
+            timeout: 10000
         };
 
-    this.settings    = this.extend(defaults, options);
-    this.fontList    = [];
+    this.settings = this.extend(defaults, options);
+    this.fontList = [];
     this.loadedFonts = 0;
-    this.timer       = 0;
+    this.timer = 0;
 
     this.createElements(function () {
 
@@ -30,7 +30,7 @@ var FontsLoaded = function(options){
 
 };
 
-FontsLoaded.prototype.createElements = function (cb){
+FontsLoaded.prototype.createElements = function (cb) {
 
     // Create elements which we will use
     // to detect if the fonts have loaded
@@ -72,9 +72,9 @@ FontsLoaded.prototype.createElements = function (cb){
         // Create an object in the fontList array so
         // we can keep track of fonts more easily
         this.fontList.push({
-            font   : fontId,
-            width  : elem.offsetWidth,
-            loaded : false
+            font: fontId,
+            width: elem.offsetWidth,
+            loaded: false
         });
     }
 
@@ -86,7 +86,7 @@ FontsLoaded.prototype.createElements = function (cb){
 
 };
 
-FontsLoaded.prototype.checkElementWidth = function (self){
+FontsLoaded.prototype.checkElementWidth = function (self) {
 
     // Here we're going to compare the current width
     // of the elements we created to their original
@@ -97,11 +97,16 @@ FontsLoaded.prototype.checkElementWidth = function (self){
 
     for (index = 0; index < self.fontList.length; ++index) {
 
-        _this      = self.fontList[index];
+        _this = self.fontList[index];
 
         if (!_this.loaded) {
-            elWebFont  = document.getElementById(_this.font + '-webfont'),
+            elWebFont = document.getElementById(_this.font + '-webfont'),
             elBaseFont = document.getElementById(_this.font + '-basefont');
+
+            // BUG: Forcing a repaint to help with Chrome webfont issue
+            // https://code.google.com/p/chromium/issues/detail?id=336476
+            elWebFont.style.color = self.randomColor();
+            elBaseFont.style.color = self.randomColor();
 
             if (elWebFont.offsetWidth !== elBaseFont.offsetWidth) {
                 // Mark font as loaded in fontList
@@ -137,6 +142,10 @@ FontsLoaded.prototype.checkElementWidth = function (self){
         if (typeof self.settings.success === 'function') {
             self.settings.success(self);
         }
+        
+        // BUG: Forcing a repaint to help with Chrome webfont issue
+        // https://code.google.com/p/chromium/issues/detail?id=336476
+        document.body.style.position = 'relative';
 
     }
 
@@ -175,6 +184,18 @@ FontsLoaded.prototype.trigger = function (eventName, el) {
 
 };
 
+FontsLoaded.prototype.randomColor = function () {
+
+    var chars = '0123456789ABCDEF'.split(''),
+        hex   = '#';
+    
+    for (var i = 0; i < 6; i++) {
+        hex += chars[Math.round(Math.random() * 15)];
+    }
+    return hex;
+
+};
+
 FontsLoaded.prototype.extend = function (object1, object2) {
 
     var key,
@@ -187,12 +208,12 @@ FontsLoaded.prototype.extend = function (object1, object2) {
 
 };
 
-String.prototype.toCamelCase = function() {
+String.prototype.toCamelCase = function () {
 
     var str = this
         .toLowerCase()
         .replace(/\s/g, '-')
-        .replace(/-(.)/g, function(match, group1) {
+        .replace(/-(.)/g, function (match, group1) {
             return group1.toUpperCase();
         });
 
