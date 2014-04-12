@@ -9,18 +9,18 @@ var FontsLoaded = function (options) {
 
     var self = this,
         defaults = {
-            fonts: [],
-            baseFont: 'arial',
-            interval: 10,
-            success: null,
-            error: null,
-            timeout: 10000
+            fonts    : [],
+            baseFont : 'arial',
+            interval : 10,
+            success  : null,
+            error    : null,
+            timeout  : 10000
         };
 
-    this.settings = this.extend(defaults, options);
-    this.fontList = [];
+    this.settings    = this.extend(defaults, options);
+    this.fontList    = [];
     this.loadedFonts = 0;
-    this.timer = 0;
+    this.timer       = 0;
 
     this.createElements(function () {
 
@@ -72,9 +72,9 @@ FontsLoaded.prototype.createElements = function (cb) {
         // Create an object in the fontList array so
         // we can keep track of fonts more easily
         this.fontList.push({
-            font: fontId,
-            width: elem.offsetWidth,
-            loaded: false
+            font   : fontId,
+            width  : elem.offsetWidth,
+            loaded : false
         });
     }
 
@@ -142,7 +142,7 @@ FontsLoaded.prototype.checkElementWidth = function (self) {
         if (typeof self.settings.success === 'function') {
             self.settings.success(self);
         }
-        
+
         // BUG: Forcing a repaint to help with Chrome webfont issue
         // https://code.google.com/p/chromium/issues/detail?id=336476
         document.body.style.position = 'relative';
@@ -188,7 +188,7 @@ FontsLoaded.prototype.randomColor = function () {
 
     var chars = '0123456789ABCDEF'.split(''),
         hex   = '#';
-    
+
     for (var i = 0; i < 6; i++) {
         hex += chars[Math.round(Math.random() * 15)];
     }
